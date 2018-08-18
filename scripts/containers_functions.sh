@@ -105,7 +105,7 @@ function provision_kubernetes_secret {
     lines_to_ignore=$(grep -Fn -m1 '{' tmpCredentialCloudant.json | awk -F':' '{ print $1 }')
     export CLOUDANT_URL=$(tail -n +${lines_to_ignore} tmpCredentialCloudant.json | jq '.credentials.url' )
 
-    substitute_variables_in_secret "./scripts/secret.json"
+    substitute_variables_in_secret "../chart/nodejs-kubernetes-sample/templates/secret.json"
 
     insert_secret $secretfile "secret.json" $(cat "./scripts/secret.json")
 

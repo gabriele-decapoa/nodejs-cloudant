@@ -28,7 +28,7 @@ spec:
           livenessProbe:
             httpGet:
               path: /health
-              port: {{ .Values.service.servicePort }}
+              port: {{ .Values.service.internalPort }}
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
@@ -48,6 +48,11 @@ spec:
           volumeMounts:
 {{ toYaml .Values.volumeMounts | indent 12 }}
         volumes:
-{{ toYaml .Values.volumes | indent 10 }}
+          - name: config-volume
+            configMap:
+              name: {{ .Chart.Name }}-configmap
+          - name: secret-volume
+            secret:
+              secretName: {{ .Chart.Name }}-secret
       imagePullSecrets:
         - name: {{ .Values.image.secret }}

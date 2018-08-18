@@ -7,9 +7,19 @@ image:
   repository: registry.mybluemix.net/replace-me-namespace/nodemicroservice
   tag: v1.0.0
   pullPolicy: IfNotPresent
+  secret: bluemix-default-secret
 livenessProbe:
-  initialDelaySeconds: 3000
-  periodSeconds: 1000
+  initialDelaySeconds: 60
+  periodSeconds: 30
+  timeoutSeconds: 20
+  successThreshold: 1
+  failureThreshold: 3
+readinessProbe:
+  initialDelaySeconds: 60
+  periodSeconds: 30
+  timeoutSeconds: 20
+  successThreshold: 1
+  failureThreshold: 3
 service:
   name: Node
   type: NodePort
@@ -31,6 +41,13 @@ resources:
   requests:
     cpu: 100m
     memory: 128Mi
+volumeMounts:
+  - name: config-volume
+    mountPath: /usr/src/app/config
+    readOnly: true
+  - name: secret-volume
+    mountPath: /usr/src/app/secretConfig
+    readOnly: true
 configmap: |-
   {
         "cloudant": {
