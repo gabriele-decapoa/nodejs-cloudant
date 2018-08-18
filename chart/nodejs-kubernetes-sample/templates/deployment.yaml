@@ -1,0 +1,53 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: "{{  .Chart.Name }}-deployment"
+spec:
+  replicas: {{ .Values.replicaCount }} # default value for pod replicas
+  minReadySeconds: {{ .Values.minReadySeconds }} # amount of time to wait before create a new pod during rolling update
+  strategy:
+    type: RollingUpdate # force to use RollingUpdate deployment strategy
+    rollingUpdate:
+      maxSurge: 1 # amount of pods that exceed the desired number
+      maxUnavailable: 1 # maximum number of pod that can be unavailable during rolling update
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }} # number of old ReplicaSets to retain to allow rollback
+  template:
+    metadata:
+      name: {{  .Chart.Name }}
+      labels:
+        chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+        app: {{  .Chart.Name }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.internalPort }}
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.service.servicePort }}
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: {{ .Values.service.internalPort }}
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          volumeMounts:
+{{ toYaml .Values.volumeMounts | indent 12 }}
+        volumes:
+{{ toYaml .Values.volumes | indent 10 }}
+      imagePullSecrets:
+        - name: {{ .Values.image.secret }}

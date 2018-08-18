@@ -1,0 +1,58 @@
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+replicaCount: 1
+minReadySeconds: 5
+revisionHistoryLimit: 1
+image:
+  repository: registry.mybluemix.net/replace-me-namespace/nodemicroservice
+  tag: v1.0.0
+  pullPolicy: IfNotPresent
+livenessProbe:
+  initialDelaySeconds: 3000
+  periodSeconds: 1000
+service:
+  name: Node
+  type: NodePort
+  externalPort: 3000
+  internalPort: 3000
+hpa:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 2
+  metrics:
+    cpu:
+      targetAverageUtilization: 70
+    memory:
+      targetAverageUtilization: 70
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+configmap: |-
+  {
+        "cloudant": {
+          "credentials": {
+            "url": "none"
+          },
+          "database_name": "my_sample_db"
+        },
+        "log4js": {
+          "appenders": {
+            "out": {
+              "type": "console",
+              "layout": {
+                "type": "coloured"
+              }
+            }
+          },
+          "categories": {
+            "default": {
+              "appenders": ["out"],
+              "level": "debug"
+            }
+          }
+        }
+      }

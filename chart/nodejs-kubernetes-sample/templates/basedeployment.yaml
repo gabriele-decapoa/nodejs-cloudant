@@ -1,0 +1,51 @@
+{{ if .Values.base.enabled }}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: "{{  .Chart.Name }}-basedeployment"
+  labels:
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.base.replicaCount }}
+  minReadySeconds: {{ .Values.minReadySeconds }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  template:
+    metadata:
+      name: {{  .Chart.Name }}
+      labels:
+        app: "{{  .Chart.Name }}-selector"
+        version: "base"
+    spec:
+      containers:
+      - name: "{{  .Chart.Name  }}"
+        image: "{{ .Values.image.repository }}:{{ .Values.base.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.service.servicePort }}
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds}}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds}}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: {{ .Values.service.internalPort }}
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+        resources:
+          requests:
+            cpu: "{{ .Values.image.resources.requests.cpu }}"
+            memory: "{{ .Values.image.resources.requests.memory }}"
+{{ end }}
