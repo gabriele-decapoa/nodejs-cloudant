@@ -23,10 +23,7 @@ bluemix_login $1 $2 $3 $4
 echo -e "${PURPLE_COLOR}Starting deploying on Kubernetes cluster${NO_COLOR}"
 echo -e "\n"
 build_image
-provision_kubernetes_secret
-provision_kubernetes_configmap
-provision_kubernetes_service
-provision_kubernetes_deployment
+provision_kubernetes_via_helm
 echo -e "${PURPLE_COLOR}App on Kubernetes deployed${NO_COLOR}"
 
 cd ..
