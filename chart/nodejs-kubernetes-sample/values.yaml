@@ -4,7 +4,7 @@ replicaCount: 1
 minReadySeconds: 5
 revisionHistoryLimit: 1
 image:
-  repository: registry.mybluemix.net/replace-me-namespace/nodemicroservice
+  repository: registry.ng.bluemix.net/gdecapoa/nodejs-cloudant
   tag: v1.0.0
   pullPolicy: IfNotPresent
   secret: bluemix-default-secret
@@ -26,21 +26,19 @@ service:
   externalPort: 3000
   internalPort: 3000
 hpa:
-  enabled: false
-  minReplicas: 1
-  maxReplicas: 2
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 6
   metrics:
     cpu:
-      targetAverageUtilization: 70
-    memory:
       targetAverageUtilization: 70
 resources:
   limits:
     cpu: 100m
     memory: 128Mi
   requests:
-    cpu: 100m
-    memory: 128Mi
+    cpu: 200m
+    memory: 256Mi
 volumeMounts:
   - name: config-volume
     mountPath: /usr/src/app/config
