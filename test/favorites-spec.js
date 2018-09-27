@@ -1,3 +1,4 @@
+const path = require('path');
 require('should');
 const supertest = require('supertest');
 const server = supertest.agent(require('../app.js'));
