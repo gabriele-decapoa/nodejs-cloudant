@@ -8,7 +8,7 @@ app.controller("myController", function($scope) {
             if ($scope.categories.indexOf($scope.addMe) == -1) {
                 $scope.categories.push($scope.addMe);
             } else {
-                $scope.errortext = "This category is already exists.";
+                $scope.errortext = "This category already exists.";
             }
         }
         $scope.removeCategory = function (x) {
