@@ -85,7 +85,7 @@ function xhrPost(url, data, callback, errback){
 	xhr.send(objectToQuery(data));
 }
 
-function xhrDelete(url, callback, errback){	
+function xhrDelete(url, callback, errback){
 	var xhr = new createXHR();
 	xhr.open("DELETE", url, true);
 	xhr.onreadystatechange = function(){
