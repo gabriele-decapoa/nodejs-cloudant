@@ -84,12 +84,12 @@ function provision_cluster {
         bx ks cluster-create --name ${CLUSTER_NAME} --kube-version ${KUBERNETES_VERSION}
     fi
     echo -e "${GREEN_COLOR}Cluster ${CLUSTER_NAME} created. You have to wait before provision will be complete${NO_COLOR}"
-    OUTPUT=$(bx cs workers ${CLUSTER_NAME} 2>&1 | grep normal | wc -l)
+    OUTPUT=$(bx ks workers ${CLUSTER_NAME} 2>&1 | grep normal | wc -l)
     while [[ ${OUTPUT} -eq 0 ]]; do
         sleep 120
         echo -e "${YELLOW_COLOR}Checking again after 120 seconds if cluster provisioning is completed${NO_COLOR}"
     done
-    cmd=$(bx cs cluster-config $CLUSTER_NAME | grep export)
+    cmd=$(bx ks cluster-config $CLUSTER_NAME | grep export)
     $cmd
     echo -e "${GREEN_COLOR}Cluster ${CLUSTER_NAME} ready and kubectl configured${NO_COLOR}"
 
@@ -101,11 +101,18 @@ function build_image {
     echo -e "${BLUE_COLOR}Building \"registry.ng.bluemix.net/${NAMESPACE}/nodejs-cloudant:${VERSION}\"...${NO_COLOR}"
     docker build -t registry.ng.bluemix.net/${NAMESPACE}/nodejs-cloudant:${VERSION} .
     echo -e "${GREEN_COLOR}\"registry.ng.bluemix.net/${NAMESPACE}/nodejs-cloudant:${VERSION}\" built${NO_COLOR}"
-    bx cr login
-    CHECK=$(bx cr namespace-list | grep ${NAMESPACE} | wc -l)
+    ibmcloud cr login
+    CHECK=$(ibmcloud cr namespace-list | grep ${NAMESPACE} | wc -l)
     if [[${CHECK} -eq 0 ]; then
-        bx cr namespace-add ${NAMESPACE}
+        ibmcloud cr namespace-add ${NAMESPACE}
     fi
+
+    echo -e "${BLUE_COLOR}Removing old images for ${IMAGE_NAME}${NO_COLOR}"
+    OLD_IMAGES=$(ibmcloud cr images | grep "${IMAGE_NAME}" | awk '{ print $1":"$2 }')
+    echo -e "${YELLOW_COLOR}Old images find: ${OLD_IMAGES}${NO_COLOR}"
+    echo ${OLD_IMAGES} | xargs ibmcloud cr image-rm
+    echo -e "${GREEN_COLOR}Removed old images for ${IMAGE_NAME}${NO_COLOR}"
+
     echo -e "${BLUE_COLOR}Pushing \"registry.ng.bluemix.net/${NAMESPACE}/nodejs-cloudant:${VERSION}\"...${NO_COLOR}"
     docker push registry.ng.bluemix.net/${NAMESPACE}/nodejs-cloudant:${VERSION}
     echo -e "${GREEN_COLOR}\"registry.ng.bluemix.net/${NAMESPACE}/nodejs-cloudant:${VERSION}\" pushed${NO_COLOR}"
@@ -113,7 +120,7 @@ function build_image {
 
 
 function provision_kubernetes_via_helm {
-    bx cf service-key ${CLOUDANT_SERVICE_INSTANCE} ${CLOUDANT_SERVICE_KEY} > tmpCredentialCloudant.json
+    ibmcloud cf service-key ${CLOUDANT_SERVICE_INSTANCE} ${CLOUDANT_SERVICE_KEY} > tmpCredentialCloudant.json
     lines_to_ignore=$(grep -Fn -m1 '{' tmpCredentialCloudant.json | awk -F':' '{ print $1 }')
     export CLOUDANT_URL=$(tail -n +${lines_to_ignore} tmpCredentialCloudant.json | jq '.credentials.url' )
 
