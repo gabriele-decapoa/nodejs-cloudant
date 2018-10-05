@@ -7,8 +7,8 @@ set -e
 export CLUSTER_NAME='sample-kubernetes-gab'
 export KUBERNETES_SERVICE_PLUGIN_NAME='kubernetes-service'
 export CONTAINER_REGISTRY_PLUGIN_NAME='container-registry'
-export KUBERNETES_VERSION='1.9.9'
-export KUBECTL_VERSION='1.9.0'
+export KUBERNETES_VERSION='1.10.8'
+export KUBECTL_VERSION='1.10.0'
 
 export CLOUDANT_SERVICE_INSTANCE='sample-cloudant-gab'
 export CLOUDANT_SERVICE_NAME='cloudantNoSQLDB'
