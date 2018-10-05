@@ -3,7 +3,7 @@ dist: trusty
 node_js: lts/carbon
 sudo: required
 services:
-- docker
+  - docker
 env:
   global:
   - TRAVIS_SECURE_ENV_VARS=true
