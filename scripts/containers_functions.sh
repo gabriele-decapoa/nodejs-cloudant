@@ -107,11 +107,11 @@ function build_image {
         ibmcloud cr namespace-add ${NAMESPACE}
     fi
 
-    echo -e "${BLUE_COLOR}Removing old images for ${IMAGE_NAME}${NO_COLOR}"
-    OLD_IMAGES=$(ibmcloud cr images | grep "${IMAGE_NAME}" | awk '{ print $1":"$2 }')
+    echo -e "${BLUE_COLOR}Removing old images for nodejs-cloudant${NO_COLOR}"
+    OLD_IMAGES=$(ibmcloud cr images | grep "nodejs-cloudant" | awk '{ print $1":"$2 }')
     echo -e "${YELLOW_COLOR}Old images find: ${OLD_IMAGES}${NO_COLOR}"
     echo ${OLD_IMAGES} | xargs ibmcloud cr image-rm
-    echo -e "${GREEN_COLOR}Removed old images for ${IMAGE_NAME}${NO_COLOR}"
+    echo -e "${GREEN_COLOR}Removed old images for nodejs-cloudant${NO_COLOR}"
 
     echo -e "${BLUE_COLOR}Pushing \"registry.ng.bluemix.net/${NAMESPACE}/nodejs-cloudant:${VERSION}\"...${NO_COLOR}"
     docker push registry.ng.bluemix.net/${NAMESPACE}/nodejs-cloudant:${VERSION}
