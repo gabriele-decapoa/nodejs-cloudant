@@ -28,6 +28,6 @@ For each changes you'll perform, set `NODE_ENV` environment variable to `test` r
 ## How to deploy on IBM Cloud Kubernetes cluster
 To build a new Docker image and deploy the application on IBM Cloud Kubernetes cluster, you have to issue the following command:
 ```bash
-sh ./scripts/build-and-deploy-all.sh
+./scripts/build-and-deploy-all.sh <api-endpoint> <apikey> <cf-org> <cf-space>"
 ```
 
