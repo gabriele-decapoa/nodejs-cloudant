@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-source ./scripts/common_functions.sh
+. ./scripts/common_functions.sh
 
 set -e
 
