@@ -96,19 +96,19 @@ function provision_cluster {
 }
 
 function build_image {
-    echo -n "${BLUE_COLOR}Which is version of \"nodejs-cloudant\" image you want to build?${NO_COLOR}"
+    echo -e "${BLUE_COLOR}Which is version of \"nodejs-cloudant\" image you want to build?${NO_COLOR}"
     read VERSION
-    echo -n "${BLUE_COLOR}Building \"registry.ng.bluemix.net/${NAMESPACE}/nodejs-cloudant:${VERSION}\"...${NO_COLOR}"
+    echo -e "${BLUE_COLOR}Building \"registry.ng.bluemix.net/${NAMESPACE}/nodejs-cloudant:${VERSION}\"...${NO_COLOR}"
     docker build -t registry.ng.bluemix.net/${NAMESPACE}/nodejs-cloudant:${VERSION} .
-    echo -n "${GREEN_COLOR}\"registry.ng.bluemix.net/${NAMESPACE}/nodejs-cloudant:${VERSION}\" built${NO_COLOR}"
+    echo -e "${GREEN_COLOR}\"registry.ng.bluemix.net/${NAMESPACE}/nodejs-cloudant:${VERSION}\" built${NO_COLOR}"
     bx cr login
     CHECK=$(bx cr namespace-list | grep ${NAMESPACE} | wc -l)
     if [[${CHECK} -eq 0 ]; then
         bx cr namespace-add ${NAMESPACE}
     fi
-    echo -n "${BLUE_COLOR}Pushing \"registry.ng.bluemix.net/${NAMESPACE}/nodejs-cloudant:${VERSION}\"...${NO_COLOR}"
+    echo -e "${BLUE_COLOR}Pushing \"registry.ng.bluemix.net/${NAMESPACE}/nodejs-cloudant:${VERSION}\"...${NO_COLOR}"
     docker push registry.ng.bluemix.net/${NAMESPACE}/nodejs-cloudant:${VERSION}
-    echo -n "${GREEN_COLOR}\"registry.ng.bluemix.net/${NAMESPACE}/nodejs-cloudant:${VERSION}\" pushed${NO_COLOR}"
+    echo -e "${GREEN_COLOR}\"registry.ng.bluemix.net/${NAMESPACE}/nodejs-cloudant:${VERSION}\" pushed${NO_COLOR}"
 }
 
 

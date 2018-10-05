@@ -14,6 +14,8 @@ echo -e "${PURPLE_COLOR}Checking prerequisites...${NO_COLOR}"
 check_kubernetes_service_plugin
 check_container_registry_plugin
 install_kubectl
+install_helm
+provision_cluster
 echo -e "${PURPLE_COLOR}*************************************${NO_COLOR}"
 echo -e "\n"
 
